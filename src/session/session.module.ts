@@ -15,6 +15,6 @@ import { SaveRecordToDatabase } from './bull.processor';
     BullModule.registerQueue({ name: 'messages' }),
   ],
   controllers: [SessionController],
-  providers: [SessionService , RedisService , SaveRecordToDatabase],
+  providers: [SessionService, RedisService, SaveRecordToDatabase],
 })
 export class SessionModule {}
