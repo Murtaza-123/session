@@ -1,6 +1,5 @@
 import { InjectQueue } from '@nestjs/bull';
 import { Injectable } from '@nestjs/common';
-import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
 import axios from 'axios';
 import { Queue } from 'bull';
@@ -27,10 +26,9 @@ export class SessionService {
       const { call_id } = req.body;
       const parseCallId = call_id.toString();
       const callIdExist = await this.redisService.get(parseCallId);
-      if(callIdExist)
-      {
+      if (callIdExist) {
         console.log(parseCallId);
-          return 'Call already started';
+        return 'Call already started';
       }
       const { bot_no } = req.body;
       const bot = await this.repositoryBot
@@ -43,17 +41,21 @@ export class SessionService {
       createConversation.call_id = call_id;
       createConversation.bot = bot;
       await this.repositoryConversation.save(createConversation);
+      const callDurationTimer = setTimeout(async () => {
+        await this.endCall(call_id); // Call your endCall function to end the call
+      }, 36000); // 1 hour in milliseconds
+
       await this.redisService.set(`call_id:${parseCallId}`, '1');
-      await this.redisService.set('bot_no' , bot_no);
+      await this.redisService.set('bot_no', bot_no);
       const conversation = await this.repositoryConversation.findOne({
         where: { call_id },
       });
       const parsedConversation = JSON.stringify(conversation);
-      await this.redisService.set('conversationId' , parsedConversation);
+      await this.redisService.set('conversationId', parsedConversation);
       if (bot && bot.Host) {
         await this.redisService.set('getURL', bot.Host);
-       const response = await axios.post(bot.Host, createDto);
-       console.log(response.data);
+        const response = await axios.post(bot.Host, createDto);
+        console.log(response.data);
         return response.data;
       }
     } catch (error) {
@@ -65,30 +67,28 @@ export class SessionService {
   async handleClientMessage(req: Request, messageDto: MessageDto) {
     try {
       const { call_id } = req.body;
-      const parseCallId = call_id.toString()
-      const callIdExist = await this.redisService.get("call_id:" + parseCallId)
+      const parseCallId = call_id.toString();
+      const callIdExist = await this.redisService.get('call_id:' + parseCallId);
       console.log(callIdExist);
-      if(!callIdExist)
-      {
-        return "call ended";
+      if (!callIdExist) {
+        return 'call ended';
+      } else {
+        const messages = req.body.messages;
+        const type = req.body.type;
+        const URL = await this.redisService.get('getURL');
+        if (URL) {
+          const conversationId = await this.redisService.get('conversationId');
+          const conversation = JSON.parse(conversationId);
+          await this.messageQueue.add('saveConversationToDataBase', {
+            messages,
+            type,
+            conversation,
+          });
+          const response = await axios.post(URL, messageDto);
+          console.log(response.data);
+          return response.data;
+        }
       }
-      else{
-      const messages = req.body.messages;
-      const type = req.body.type;
-      const URL = await this.redisService.get('getURL');
-      if (URL) {
-        const conversationId = await this.redisService.get('conversationId');
-        const conversation = JSON.parse(conversationId);
-        await this.messageQueue.add('saveConversationToDataBase', {
-          messages,
-          type,
-          conversation,
-        });
-        const response = await axios.post(URL, messageDto);
-        console.log(response.data);
-        return response.data;
-      }
-    }
     } catch (error) {
       console.error('Conversation not started:', error);
       throw new Error(
@@ -99,13 +99,12 @@ export class SessionService {
 
   async sendBotResponseToClient(req: Request, messageDto: MessageDto) {
     try {
-      const {call_id} = req.body
+      const { call_id } = req.body;
       const parseCallId = call_id.toString();
-      const callIdExist = await this.redisService.get("call_id:" + parseCallId);
-      console.log(callIdExist)
-      if(!callIdExist)
-      {
-         return 'Call Ended';
+      const callIdExist = await this.redisService.get('call_id:' + parseCallId);
+      console.log(callIdExist);
+      if (!callIdExist) {
+        return 'Call Ended';
       }
       const url = await this.redisService.get('getURL');
       if (url) {
@@ -129,12 +128,12 @@ export class SessionService {
     }
   }
 
-    async endCall(call_id: number): Promise<Conversation> {
+  async endCall(call_id: number): Promise<Conversation> {
     const conversation = await this.repositoryConversation.findOne({
       where: { call_id: call_id },
     });
     const deleteCall = call_id.toString();
-    await this.redisService.delete("call_id:" + deleteCall);
+    await this.redisService.delete('call_id:' + deleteCall);
 
     if (!conversation) {
       throw new Error(`Conversation with id ${call_id} not found.`);
