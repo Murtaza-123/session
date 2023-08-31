@@ -15,4 +15,11 @@ export class MessagesService {
     }
     return false;
   }
+
+  async clientMessages() {
+    return await this.repositoryMessage
+      .createQueryBuilder('messages')
+      .where('messages.type =: type', { type: 'client' })
+      .getMany();
+  }
 }
