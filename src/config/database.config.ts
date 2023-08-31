@@ -10,16 +10,14 @@ export const TypeOrmOptions: TypeOrmModuleOptions = {
   username: 'root',
   password: 'root',
   database: 'CallRecords',
-  entities: [Conversation , Messages , Bot],
+  entities: [Conversation, Messages, Bot],
   synchronize: false,
 };
 
 export const OrmConfig = {
   ...TypeOrmOptions,
-  migrations: ['/home/murtaza/Documents/nlp-core/src/database/*.ts'], 
+  migrations: ['/home/murtaza/Documents/session/src/database/*.ts'],
   cli: {
-    "migrationsDir": "src/database"
-}
+    migrationsDir: 'src/database',
+  },
 };
-
-

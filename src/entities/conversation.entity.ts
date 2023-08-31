@@ -3,10 +3,8 @@ import {
   CreateDateColumn,
   Entity,
   ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Messages } from './messages.entity';
 import { Bot } from './bot.entity';
 
 @Entity()

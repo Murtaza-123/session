@@ -13,28 +13,25 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MessagesService = void 0;
-const bull_1 = require("@nestjs/bull");
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
-const redis_1 = require("../Redis/redis");
-const bot_entity_1 = require("../entities/bot.entity");
-const conversation_entity_1 = require("../entities/conversation.entity");
+const messages_entity_1 = require("../entities/messages.entity");
 const typeorm_2 = require("typeorm");
 let MessagesService = exports.MessagesService = class MessagesService {
-    constructor(repositoryConversation, repositoryBot, redisService, messageQueue) {
-        this.repositoryConversation = repositoryConversation;
-        this.repositoryBot = repositoryBot;
-        this.redisService = redisService;
-        this.messageQueue = messageQueue;
+    constructor(repositoryMessage) {
+        this.repositoryMessage = repositoryMessage;
+    }
+    async findId(id) {
+        const messageId = await this.repositoryMessage.findOne({ where: { id } });
+        if (messageId) {
+            return true;
+        }
+        return false;
     }
 };
 exports.MessagesService = MessagesService = __decorate([
     (0, common_1.Injectable)(),
-    __param(0, (0, typeorm_1.InjectRepository)(conversation_entity_1.Conversation)),
-    __param(1, (0, typeorm_1.InjectRepository)(bot_entity_1.default)),
-    __param(3, (0, bull_1.InjectQueue)('messages')),
-    __metadata("design:paramtypes", [typeorm_2.Repository,
-        typeorm_2.Repository,
-        redis_1.RedisService, Object])
+    __param(0, (0, typeorm_1.InjectRepository)(messages_entity_1.Messages)),
+    __metadata("design:paramtypes", [typeorm_2.Repository])
 ], MessagesService);
 //# sourceMappingURL=messages.service.js.map

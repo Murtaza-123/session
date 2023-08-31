@@ -16,9 +16,9 @@ exports.TypeOrmOptions = {
 };
 exports.OrmConfig = {
     ...exports.TypeOrmOptions,
-    migrations: ['/home/murtaza/Documents/nlp-core/src/database/*.ts'],
+    migrations: ['/home/murtaza/Documents/session/src/database/*.ts'],
     cli: {
-        "migrationsDir": "src/database"
-    }
+        migrationsDir: 'src/database',
+    },
 };
 //# sourceMappingURL=database.config.js.map

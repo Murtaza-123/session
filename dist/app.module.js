@@ -16,8 +16,8 @@ const database_config_1 = require("./config/database.config");
 const bot_module_1 = require("./bot/bot.module");
 const messages_module_1 = require("./messages/messages.module");
 const bull_1 = require("@nestjs/bull");
-const session_module_1 = require("./nlp-core/session.module");
 const schedule_1 = require("@nestjs/schedule");
+const session_module_1 = require("./session/session.module");
 console.log(database_config_1.TypeOrmOptions.migrations);
 let AppModule = exports.AppModule = class AppModule {
 };
@@ -25,7 +25,7 @@ exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
             config_1.ConfigModule.forRoot({
-                isGlobal: true
+                isGlobal: true,
             }),
             bull_1.BullModule.forRoot({
                 redis: {
@@ -37,7 +37,7 @@ exports.AppModule = AppModule = __decorate([
             session_module_1.SessionModule,
             bot_module_1.BotModule,
             messages_module_1.MessagesModule,
-            schedule_1.ScheduleModule.forRoot()
+            schedule_1.ScheduleModule.forRoot(),
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

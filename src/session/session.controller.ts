@@ -2,16 +2,12 @@ import { Body, Controller, Param, Post, Req } from '@nestjs/common';
 import { Request } from 'express';
 import { CreateNlpDto } from 'src/Dto/create-conversation-dto';
 import { MessageDto } from 'src/Dto/create-message-dto';
-import { MessagesService } from 'src/messages/messages.service';
 import { ApiProperty } from '@nestjs/swagger';
 import { SessionService } from './session.service';
-import { Cron, CronExpression } from '@nestjs/schedule';
 
 @Controller('api/v1/session')
 export class SessionController {
-  constructor(
-    private sessionService: SessionService,
-  ) {}
+  constructor(private sessionService: SessionService) {}
   @Post('start')
   async startCall(@Req() req: Request, @Body() createDto: CreateNlpDto) {
     return this.sessionService.startCall(req, createDto);

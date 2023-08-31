@@ -1,12 +1,12 @@
-import { Column, Entity, PrimaryGeneratedColumn} from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
-export class Bot{
+export class Bot {
   @PrimaryGeneratedColumn()
-  id:number;
+  id: number;
 
-  @Column('simple-array',{nullable:true})
-  bot_name: string
+  @Column('simple-array', { nullable: true })
+  bot_name: string;
 
   @Column('simple-array', { nullable: true })
   bot_no: string[];
@@ -15,6 +15,9 @@ export class Bot{
   Description: string;
 
   @Column()
+  Hard_Timer: number;
+
+  @Column()
   Host: string;
 }
-export default Bot
+export default Bot;

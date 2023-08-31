@@ -31,6 +31,10 @@ __decorate([
 ], Bot.prototype, "Description", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
+    __metadata("design:type", Number)
+], Bot.prototype, "Hard_Timer", void 0);
+__decorate([
+    (0, typeorm_1.Column)(),
     __metadata("design:type", String)
 ], Bot.prototype, "Host", void 0);
 exports.Bot = Bot = __decorate([

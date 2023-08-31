@@ -12,19 +12,12 @@ const messages_service_1 = require("./messages.service");
 const messages_controller_1 = require("./messages.controller");
 const typeorm_1 = require("@nestjs/typeorm");
 const messages_entity_1 = require("../entities/messages.entity");
-const conversation_entity_1 = require("../entities/conversation.entity");
-const bot_entity_1 = require("../entities/bot.entity");
-const redis_1 = require("../Redis/redis");
-const bull_1 = require("@nestjs/bull");
 let MessagesModule = exports.MessagesModule = class MessagesModule {
 };
 exports.MessagesModule = MessagesModule = __decorate([
     (0, common_1.Module)({
-        imports: [
-            typeorm_1.TypeOrmModule.forFeature([messages_entity_1.Messages, conversation_entity_1.Conversation, bot_entity_1.default]),
-            bull_1.BullModule.registerQueue({ name: 'messages' }),
-        ],
-        providers: [redis_1.RedisService, messages_service_1.MessagesService],
+        imports: [typeorm_1.TypeOrmModule.forFeature([messages_entity_1.Messages])],
+        providers: [messages_service_1.MessagesService],
         controllers: [messages_controller_1.MessagesController],
     })
 ], MessagesModule);

@@ -3,6 +3,7 @@ export declare class Bot {
     bot_name: string;
     bot_no: string[];
     Description: string;
+    Hard_Timer: number;
     Host: string;
 }
 export default Bot;

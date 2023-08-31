@@ -41,7 +41,10 @@ export class SessionService {
       createConversation.call_id = call_id;
       createConversation.bot = bot;
       await this.repositoryConversation.save(createConversation);
-
+      const hard_timer = bot.Hard_Timer;
+      setTimeout(async () => {
+        await this.endCall(call_id);
+      }, hard_timer);
       await this.redisService.set(`call_id:${parseCallId}`, '1');
       await this.redisService.set('bot_no', bot_no);
       const conversation = await this.repositoryConversation.findOne({

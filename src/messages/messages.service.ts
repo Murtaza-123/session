@@ -1,16 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Messages } from 'src/entities/messages.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()
 export class MessagesService {
   constructor(
-    @InjectRepository(Conversation)
-    private repositoryConversation: Repository<Conversation>,
-    @InjectRepository(Bot)
-    private repositoryBot: Repository<Bot>,
-    private redisService: RedisService,
-    @InjectQueue('messages') private messageQueue: Queue,
+    @InjectRepository(Messages) private repositoryMessage: Repository<Messages>,
   ) {}
   async findId(id: number) {
     const messageId = await this.repositoryMessage.findOne({ where: { id } });
